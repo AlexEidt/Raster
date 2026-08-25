@@ -26,7 +26,7 @@ class Context(val width: Int, val height: Int, val framebuffer: IntArray) {
 
         // Is any vertex behind the near plane?
         if (t1.Behind() || t2.Behind() || t3.Behind()) {
-            val triangles = t.Clip()
+            val triangles = t.Clip(Plane(Tensor(0f, 0f, -1f, 1f), Tensor(0f, 0f, 1f, 1f)))
             for (triangle in triangles) {
                 Draw(triangle)
             }

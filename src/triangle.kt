@@ -24,12 +24,7 @@ data class RasterTriangle(
     var t2: Tensor,
     var t3: Tensor
 ) {
-    fun Clip(): Array<RasterTriangle> {
-        val near = Plane(
-            Tensor(0f, 0f, -1f, 1f),
-            Tensor(0f, 0f, 1f, 1f)
-        )
-
+    fun Clip(plane: Plane): Array<RasterTriangle> {
         val inside = mutableListOf<Tensor>()
         val outside = mutableListOf<Tensor>()
 

@@ -28,9 +28,9 @@ data class RasterTriangle(
         val inside = mutableListOf<Tensor>()
         val outside = mutableListOf<Tensor>()
 
-        if (near.Front(t1)) inside.add(t1) else outside.add(t1)
-        if (near.Front(t2)) inside.add(t2) else outside.add(t2)
-        if (near.Front(t3)) inside.add(t3) else outside.add(t3)
+        if (plane.Front(t1)) inside.add(t1) else outside.add(t1)
+        if (plane.Front(t2)) inside.add(t2) else outside.add(t2)
+        if (plane.Front(t3)) inside.add(t3) else outside.add(t3)
 
         return when (inside.size) {
             0 -> emptyArray()
@@ -38,8 +38,8 @@ data class RasterTriangle(
             1 -> {
                 val clipped = copy()
                 clipped.t1 = inside[0]
-                clipped.t2 = near.Intersect(inside[0], outside[0])
-                clipped.t3 = near.Intersect(inside[0], outside[1])
+                clipped.t2 = plane.Intersect(inside[0], outside[0])
+                clipped.t3 = plane.Intersect(inside[0], outside[1])
 
                 val v1 = t1.Vector()
                 val v2 = t2.Vector()
@@ -55,8 +55,8 @@ data class RasterTriangle(
                 val clipped1 = copy()
                 val clipped2 = copy()
 
-                val x1 = near.Intersect(inside[0], outside[0])
-                val x2 = near.Intersect(inside[1], outside[0])
+                val x1 = plane.Intersect(inside[0], outside[0])
+                val x2 = plane.Intersect(inside[1], outside[0])
 
                 clipped1.t1 = inside[0]
                 clipped1.t2 = inside[1]

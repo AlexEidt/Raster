@@ -17,7 +17,7 @@ data class Color(var r: Float, var g: Float, var b: Float, var a: Float = 1f) {
     operator fun times(s: Float) = Color(r * s, g * s, b * s, a * s)
     operator fun div(s: Float) = Color(r / s, g / s, b / s, a / s)
 
-    fun clamp() {
+    fun Clamp() {
         r = r.coerceIn(0f, 1f)
         g = g.coerceIn(0f, 1f)
         b = b.coerceIn(0f, 1f)

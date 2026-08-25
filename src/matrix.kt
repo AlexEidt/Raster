@@ -38,7 +38,7 @@ data class Matrix(
         m30 * t.x + m31 * t.y + m32 * t.z + m33 * t.w
     )
 
-    fun transpose() = Matrix(
+    fun Transpose() = Matrix(
         m00, m10, m20, m30,
         m01, m11, m21, m31,
         m02, m12, m22, m32,
@@ -79,7 +79,7 @@ data class Matrix(
 
         fun Rotate(axis: Vector, angle: Float): Matrix {
             val radians = angle * Math.PI.toFloat() / 180f
-            val a = axis.normalized()
+            val a = axis.Normalized()
             val c = cos(radians)
             val s = sin(radians)
             val t = 1f - c
@@ -93,14 +93,14 @@ data class Matrix(
         }
 
         fun LookAt(eye: Vector, target: Vector, up: Vector): Matrix {
-            val f = (target - eye).normalized()
-            val s = f.cross(up).normalized()
-            val u = s.cross(f)
+            val f = (target - eye).Normalized()
+            val s = f.Cross(up).Normalized()
+            val u = s.Cross(f)
 
             return Matrix(
-                s.x,  s.y,  s.z,  -s.dot(eye),
-                u.x,  u.y,  u.z,  -u.dot(eye),
-                -f.x, -f.y, -f.z, f.dot(eye),
+                s.x,  s.y,  s.z,  -s.Dot(eye),
+                u.x,  u.y,  u.z,  -u.Dot(eye),
+                -f.x, -f.y, -f.z, f.Dot(eye),
                 0f,   0f,   0f,   1f
             )
         }

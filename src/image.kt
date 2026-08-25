@@ -51,23 +51,27 @@ class Image(val width: Int, val height: Int, private val pixels: IntArray = IntA
         return top * (1f - ty) + bottom * ty
     }
 
-    fun Write(path: String) {
-        val file = File(path)
-        val extension = file.extension.lowercase()
+    companion object {
+        fun Write(path: String, width: Int, height: Int, pixels: IntArray) {
+            require(width * height == pixels.size) {
+                "Pixel array size ${pixels.size} does not match image dimensions ${width}x${height}"
+            }
 
-        require(extension == "png" || extension == "jpg" || extension == "jpeg") {
-            "Unsupported image format: .$extension"
+            val file = File(path)
+            val extension = file.extension.lowercase()
+
+            require(extension == "png" || extension == "jpg" || extension == "jpeg") {
+                "Unsupported image format: .$extension"
+            }
+
+            val image = java.awt.image.BufferedImage(
+                width, height, java.awt.image.BufferedImage.TYPE_INT_ARGB
+            )
+
+            image.setRGB(0, 0, width, height, pixels, 0, width)
+            ImageIO.write(image, if (extension == "jpeg") "jpg" else extension, file)
         }
 
-        val image = java.awt.image.BufferedImage(
-            width, height, java.awt.image.BufferedImage.TYPE_INT_ARGB
-        )
-
-        image.setRGB(0, 0, width, height, pixels, 0, width)
-        ImageIO.write(image, if (extension == "jpeg") "jpg" else extension, file)
-    }
-
-    companion object {
         private fun load(path: String): Image {
             val extension = File(path).extension.lowercase()
 

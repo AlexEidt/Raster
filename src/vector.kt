@@ -14,18 +14,18 @@ data class Vector(val x: Float, val y: Float, val z: Float) {
 
     operator fun unaryMinus() = Vector(-x, -y, -z)
 
-    fun dot(v: Vector) = x * v.x + y * v.y + z * v.z
+    fun Dot(v: Vector) = x * v.x + y * v.y + z * v.z
 
-    fun cross(v: Vector) = Vector(
+    fun Cross(v: Vector) = Vector(
         y * v.z - z * v.y,
         z * v.x - x * v.z,
         x * v.y - y * v.x
     )
 
-    fun length() = sqrt(x * x + y * y + z * z)
+    fun Length() = sqrt(x * x + y * y + z * z)
 
-    fun normalized(): Vector {
-        val length = length()
+    fun Normalized(): Vector {
+        val length = Length()
         return if (length != 0f) this / length else this
     }
 }

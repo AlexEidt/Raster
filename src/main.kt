@@ -8,6 +8,8 @@ class Renderer(private val width: Int, private val height: Int, private val canv
     private val image = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
     private val framebuffer = (image.raster.dataBuffer as DataBufferInt).data
 
+    private val context = Context(width, height, framebuffer)
+
     private var frame = 0
 
     fun rgba(r: Int, g: Int, b: Int, a: Int = 255): Int {

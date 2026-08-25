@@ -3,7 +3,7 @@ import java.io.File
 class Mesh(val triangles: Array<Triangle>) {
 
     companion object {
-        fun loadOBJ(path: String): Mesh {
+        fun LoadOBJ(path: String): Mesh {
             val vertices = mutableListOf<Vector>()
             val texcoords = mutableListOf<Point>()
             val normals = mutableListOf<Vector>()

@@ -12,7 +12,9 @@ data class Tensor(val x: Float, val y: Float, val z: Float, val w: Float) {
 
     operator fun unaryMinus() = Tensor(-x, -y, -z, -w)
 
-    fun Outside() = x < -w || x > w || y < -w || y > w || z < -w || z > w
+    fun Behind(): Boolean = z < -w
+
+    fun Dot(v: Tensor) = x * v.x + y * v.y + z * v.z + w * v.w
 
     fun Vector() = Vector(x, y, z)
 }

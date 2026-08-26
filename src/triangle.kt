@@ -3,18 +3,17 @@ data class Triangle(
     var v2: Vertex = Vertex(),
     var v3: Vertex = Vertex()
 ) {
-    fun Normal(): Vector {
-        return (v2.position - v1.position).Cross(v3.position - v1.position).Normalized()
+    fun Apply(shader: Shader): RasterTriangle {
+        return RasterTriangle(
+            this,
+            shader.Vertex(v1),
+            shader.Vertex(v2),
+            shader.Vertex(v3)
+        )
     }
 
-    fun Interpolate(vector: Vector): Vertex {
-        val v = Vertex()
-        v.position = v1.position * vector.x + v2.position * vector.y + v3.position * vector.z
-        v.normal = (v1.normal * vector.x + v2.normal * vector.y + v3.normal * vector.z).Normalized()
-        v.texture = v1.texture * vector.x + v2.texture * vector.y + v3.texture * vector.z
-        v.color = v1.color * vector.x + v2.color * vector.y + v3.color * vector.z
-
-        return v
+    fun Normal(): Vector {
+        return (v2.position - v1.position).Cross(v3.position - v1.position).Normalized()
     }
 }
 
@@ -25,28 +24,33 @@ data class RasterTriangle(
     var t3: Tensor
 ) {
     fun Clip(plane: Plane): Array<RasterTriangle> {
-        val inside = mutableListOf<Tensor>()
-        val outside = mutableListOf<Tensor>()
+        data class Pair(
+            val tensor: Tensor,
+            val vertex: Vertex
+        )
 
-        if (plane.Front(t1)) inside.add(t1) else outside.add(t1)
-        if (plane.Front(t2)) inside.add(t2) else outside.add(t2)
-        if (plane.Front(t3)) inside.add(t3) else outside.add(t3)
+        val inside = mutableListOf<Pair>()
+        val outside = mutableListOf<Pair>()
+
+        if (plane.Front(t1)) inside.add(Pair(t1, triangle.v1)) else outside.add(Pair(t1, triangle.v1))
+        if (plane.Front(t2)) inside.add(Pair(t2, triangle.v2)) else outside.add(Pair(t2, triangle.v2))
+        if (plane.Front(t3)) inside.add(Pair(t3, triangle.v3)) else outside.add(Pair(t3, triangle.v3))
 
         return when (inside.size) {
             0 -> emptyArray()
 
             1 -> {
                 val clipped = copy()
-                clipped.t1 = inside[0]
-                clipped.t2 = plane.Intersect(inside[0], outside[0])
-                clipped.t3 = plane.Intersect(inside[0], outside[1])
+                val (x1, a) = plane.Intersect(inside[0].tensor, outside[0].tensor)
+                val (x2, b) = plane.Intersect(inside[0].tensor, outside[1].tensor)
 
-                val v1 = t1.Vector()
-                val v2 = t2.Vector()
-                val v3 = t3.Vector()
+                clipped.t1 = inside[0].tensor
+                clipped.t2 = x1
+                clipped.t3 = x2
 
-                clipped.triangle.v2 = triangle.Interpolate(Barycentric(v1, v2, v3, clipped.t2.Vector()))
-                clipped.triangle.v3 = triangle.Interpolate(Barycentric(v1, v2, v3, clipped.t3.Vector()))
+                clipped.triangle.v1 = inside[0].vertex
+                clipped.triangle.v2 = inside[0].vertex.Interpolate(outside[0].vertex, a)
+                clipped.triangle.v3 = inside[0].vertex.Interpolate(outside[1].vertex, b)
 
                 arrayOf(clipped)
             }
@@ -55,24 +59,27 @@ data class RasterTriangle(
                 val clipped1 = copy()
                 val clipped2 = copy()
 
-                val x1 = plane.Intersect(inside[0], outside[0])
-                val x2 = plane.Intersect(inside[1], outside[0])
+                val (x1, a) = plane.Intersect(inside[0].tensor, outside[0].tensor)
+                val (x2, b) = plane.Intersect(inside[1].tensor, outside[0].tensor)
 
-                clipped1.t1 = inside[0]
-                clipped1.t2 = inside[1]
+                clipped1.t1 = inside[0].tensor
+                clipped1.t2 = inside[1].tensor
                 clipped1.t3 = x1
 
-                clipped2.t1 = inside[1]
+                clipped2.t1 = inside[1].tensor
                 clipped2.t2 = x1
                 clipped2.t3 = x2
 
-                val v1 = t1.Vector()
-                val v2 = t2.Vector()
-                val v3 = t3.Vector()
+                val vertex1 = inside[0].vertex.Interpolate(outside[0].vertex, a)
+                val vertex2 = inside[1].vertex.Interpolate(outside[0].vertex, b)
 
-                clipped1.triangle.v3 = triangle.Interpolate(Barycentric(v1, v2, v3, x1.Vector()))
-                clipped2.triangle.v2 = clipped1.triangle.v3
-                clipped2.triangle.v3 = triangle.Interpolate(Barycentric(v1, v2, v3, x2.Vector()))
+                clipped1.triangle.v1 = inside[0].vertex
+                clipped1.triangle.v2 = inside[1].vertex
+                clipped1.triangle.v3 = vertex1
+
+                clipped2.triangle.v1 = inside[1].vertex
+                clipped2.triangle.v2 = vertex1
+                clipped2.triangle.v3 = vertex2
 
                 arrayOf(clipped1, clipped2)
             }

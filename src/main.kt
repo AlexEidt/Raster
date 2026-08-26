@@ -1,5 +1,5 @@
 import java.awt.Canvas
-import java.awt.Color
+import java.awt.Color as AWTColor
 import java.awt.image.BufferedImage
 import java.awt.image.DataBufferInt
 import javax.swing.JFrame
@@ -8,23 +8,7 @@ class Renderer(private val width: Int, private val height: Int, private val canv
     private val image = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
     private val framebuffer = (image.raster.dataBuffer as DataBufferInt).data
 
-    private val context = Context(width, height, framebuffer)
-
-    private var frame = 0
-
-    fun rgba(r: Int, g: Int, b: Int, a: Int = 255): Int {
-        return (a shl 24) or (r shl 16) or (g shl 8) or b
-    }
-
-    fun render() {
-        val color = rgba(frame++ % 256, 100, 200)
-
-        for (y in 0 until height) {
-            for (x in 0 until width) {
-                framebuffer[y * width + x] = color
-            }
-        }
-    }
+    val context = Context(width, height, framebuffer)
 
     fun present() {
         do {
@@ -44,7 +28,7 @@ fun main() {
     val width = 800
     val height = 600
     val canvas = Canvas()
-    canvas.background = Color.BLACK
+    canvas.background = AWTColor.BLACK
     canvas.ignoreRepaint = true
 
     val window = JFrame("Raster")
@@ -62,10 +46,28 @@ fun main() {
     var frames = 0
     var lastTime = System.nanoTime()
 
+    val cube = Mesh.LoadOBJ("cube.obj")
+
+    val projection = Matrix.Perspective(90f, width.toFloat() / height, 0.1f, 100f)
+    val view = Matrix.LookAt(
+        Vector(0f, 0f, 5f),
+        Vector(0f, 0f, 0f),
+        Vector(0f, 1f, 0f)
+    )
+
+    val mat = projection * view
+    var angle = 0f
+
     while (true) {
-        renderer.render()
+        val rotation = Matrix.Rotate(Vector(0f, 1f, 1f), angle)
+        renderer.context.shader = BasicShader(mat * rotation, Color(0f, 1f, 0f))
+
+        renderer.context.Clear(Color(0f, 0f, 0f))
+        renderer.context.Draw(cube)
+
         renderer.present()
 
+        angle += 0.2f
         frames++
 
         val now = System.nanoTime()

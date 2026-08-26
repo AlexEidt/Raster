@@ -4,12 +4,17 @@ class Mesh(val triangles: Array<Triangle>) {
 
     companion object {
         fun LoadOBJ(path: String): Mesh {
+            val file = File(path)
+
+            require(file.exists()) { "File does not exist: $path" }
+            require(file.extension.lowercase() == "obj") { "File is not an OBJ: $path" }
+
             val vertices = mutableListOf<Vector>()
             val texcoords = mutableListOf<Point>()
             val normals = mutableListOf<Vector>()
             val triangles = mutableListOf<Triangle>()
 
-            File(path).forEachLine { line ->
+            file.forEachLine { line ->
                 val fields = line.trim().split(Regex("\\s+"))
 
                 if (fields.isEmpty() || fields[0].startsWith("#")) {

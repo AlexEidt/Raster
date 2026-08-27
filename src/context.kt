@@ -13,27 +13,28 @@ class Context(val width: Int, val height: Int, val framebuffer: IntArray) {
 
     var shader: Shader = BasicShader(Matrix.Identity(), Color(1f, 1f, 1f))
 
+    fun Clear(color: Color) {
+        framebuffer.fill(color.RGBA())
+        depthbuffer.fill(Float.POSITIVE_INFINITY)
+    }
+
     fun Draw(mesh: Mesh) {
         Parallel { cpu, cpus ->
             for (i in cpu until mesh.triangles.size step cpus) {
-                Draw(mesh.triangles[i])
+                val t = mesh.triangles[i].Apply(shader)
+
+                // Is any vertex behind the near plane?
+                if (t.t1.Behind() || t.t2.Behind() || t.t3.Behind()) {
+                    val near = Plane(Tensor(0f, 0f, -1f, 1f), Tensor(0f, 0f, 1f, 1f))
+
+                    val triangles = t.Clip(near)
+                    for (triangle in triangles) {
+                        Rasterize(triangle)
+                    }
+                } else {
+                    Rasterize(t)
+                }
             }
-        }
-    }
-
-    fun Draw(tri: Triangle) {
-        val t = tri.Apply(shader)
-
-        // Is any vertex behind the near plane?
-        if (t.t1.Behind() || t.t2.Behind() || t.t3.Behind()) {
-            val near = Plane(Tensor(0f, 0f, -1f, 1f), Tensor(0f, 0f, 1f, 1f))
-
-            val triangles = t.Clip(near)
-            for (triangle in triangles) {
-                Rasterize(triangle)
-            }
-        } else {
-            Rasterize(t)
         }
     }
 
@@ -44,14 +45,9 @@ class Context(val width: Int, val height: Int, val framebuffer: IntArray) {
 
         return Vector(
             x * width / 2f + width / 2f,
-            -y * height / 2f + height / 2f,
+            y * height / 2f + height / 2f,
             z * 0.5f + 0.5f
         )
-    }
-
-    fun Clear(color: Color) {
-        framebuffer.fill(color.RGBA())
-        depthbuffer.fill(Float.POSITIVE_INFINITY)
     }
 
     fun Rasterize(tri: RasterTriangle) {

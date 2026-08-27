@@ -77,6 +77,15 @@ data class Matrix(
             )
         }
 
+        fun Translate(x: Float, y: Float, z: Float): Matrix {
+            return Matrix(
+                1f, 0f, 0f, x,
+                0f, 1f, 0f, y,
+                0f, 0f, 1f, z,
+                0f, 0f, 0f, 1f
+            )
+        }
+
         fun Rotate(axis: Vector, angle: Float): Matrix {
             val radians = angle * Math.PI.toFloat() / 180f
             val a = axis.Normalized()

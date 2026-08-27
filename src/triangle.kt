@@ -23,6 +23,13 @@ data class RasterTriangle(
     var t2: Tensor,
     var t3: Tensor
 ) {
+    fun DeepCopy() = RasterTriangle(
+        Triangle(triangle.v1.copy(), triangle.v2.copy(), triangle.v3.copy()),
+        t1,
+        t2,
+        t3
+    )
+
     fun Clip(plane: Plane): Array<RasterTriangle> {
         data class Pair(
             val tensor: Tensor,
@@ -40,7 +47,7 @@ data class RasterTriangle(
             0 -> emptyArray()
 
             1 -> {
-                val clipped = copy()
+                val clipped = DeepCopy()
                 val (x1, a) = plane.Intersect(inside[0].tensor, outside[0].tensor)
                 val (x2, b) = plane.Intersect(inside[0].tensor, outside[1].tensor)
 
@@ -56,8 +63,8 @@ data class RasterTriangle(
             }
 
             2 -> {
-                val clipped1 = copy()
-                val clipped2 = copy()
+                val clipped1 = DeepCopy()
+                val clipped2 = DeepCopy()
 
                 val (x1, a) = plane.Intersect(inside[0].tensor, outside[0].tensor)
                 val (x2, b) = plane.Intersect(inside[1].tensor, outside[0].tensor)

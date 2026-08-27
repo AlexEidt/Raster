@@ -3,7 +3,6 @@ import javax.imageio.ImageIO
 import kotlin.math.floor
 
 class Image(val width: Int, val height: Int, private val pixels: IntArray = IntArray(width * height)) {
-
     constructor(path: String) : this(load(path))
 
     private constructor(image: Image) : this(image.width, image.height, image.pixels)

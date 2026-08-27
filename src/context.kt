@@ -60,9 +60,7 @@ class Context(val width: Int, val height: Int, val framebuffer: IntArray) {
         val v3 = tri.triangle.v3
 
         // Back-face culling
-        val area =
-            (s2.x - s1.x) * (s3.y - s1.y) -
-                    (s3.x - s1.x) * (s2.y - s1.y)
+        val area = (s2.x - s1.x) * (s3.y - s1.y) - (s3.x - s1.x) * (s2.y - s1.y)
 
         if (area <= 0f) {
             return
@@ -80,14 +78,8 @@ class Context(val width: Int, val height: Int, val framebuffer: IntArray) {
             for (x in minX..maxX) {
                 val p = Vector(x + 0.5f, y + 0.5f, 0f)
 
-                val b0 =
-                    ((s2.y - s3.y) * (p.x - s3.x) +
-                            (s3.x - s2.x) * (p.y - s3.y)) * inverseArea
-
-                val b1 =
-                    ((s3.y - s1.y) * (p.x - s3.x) +
-                            (s1.x - s3.x) * (p.y - s3.y)) * inverseArea
-
+                val b0 = ((s2.y - s3.y) * (p.x - s3.x) + (s3.x - s2.x) * (p.y - s3.y)) * inverseArea
+                val b1 = ((s3.y - s1.y) * (p.x - s3.x) + (s1.x - s3.x) * (p.y - s3.y)) * inverseArea
                 val b2 = 1f - b0 - b1
 
                 if (b0 < 0f || b1 < 0f || b2 < 0f) {
@@ -116,32 +108,13 @@ class Context(val width: Int, val height: Int, val framebuffer: IntArray) {
 
                     val sum = pw0 + pw1 + pw2
 
-                    val weights = Vector(
-                        pw0 / sum,
-                        pw1 / sum,
-                        pw2 / sum
-                    )
+                    val weights = Vector(pw0 / sum, pw1 / sum, pw2 / sum)
 
                     val vertex = Vertex(
-                        position =
-                            v1.position * weights.x +
-                                    v2.position * weights.y +
-                                    v3.position * weights.z,
-
-                        normal =
-                            (v1.normal * weights.x +
-                                    v2.normal * weights.y +
-                                    v3.normal * weights.z).Normalized(),
-
-                        texture =
-                            v1.texture * weights.x +
-                                    v2.texture * weights.y +
-                                    v3.texture * weights.z,
-
-                        color =
-                            v1.color * weights.x +
-                                    v2.color * weights.y +
-                                    v3.color * weights.z
+                        position = v1.position * weights.x + v2.position * weights.y + v3.position * weights.z,
+                        normal = (v1.normal * weights.x + v2.normal * weights.y + v3.normal * weights.z).Normalized(),
+                        texture = v1.texture * weights.x + v2.texture * weights.y + v3.texture * weights.z,
+                        color = v1.color * weights.x + v2.color * weights.y + v3.color * weights.z
                     )
 
                     framebuffer[index] = shader.Fragment(vertex).RGBA()

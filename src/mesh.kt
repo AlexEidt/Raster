@@ -1,7 +1,6 @@
 import java.io.File
 
 class Mesh(val triangles: Array<Triangle>) {
-
     companion object {
         fun LoadOBJ(path: String): Mesh {
             val file = File(path)

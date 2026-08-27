@@ -19,7 +19,7 @@ fun main() {
         if (window.texture != null) {
             window.context.shader = TextureShader(mat * model, window.texture!!, Color(1f, 1f, 1f))
         } else {
-            window.context.shader = BasicShader(mat * model, Color(0f, 1f, 0f))
+            window.context.shader = PhongShader(mat * model)
         }
         window.context.Clear(Color(0f, 0f, 0f))
         window.context.Draw(window.mesh)

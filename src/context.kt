@@ -169,6 +169,7 @@ class Context(val width: Int, val height: Int, val framebuffer: IntArray) {
                 val index = y0 * width + x0
 
                 if (z <= depthbuffer[index] + 0.001f) {
+                    // No lock since all line colors are the same
                     framebuffer[index] = Color(1f, 1f, 1f).RGBA()
                 }
             }

@@ -1,6 +1,30 @@
 import java.io.File
 
 class Mesh(val triangles: Array<Triangle>) {
+    init {
+        // Center mesh at origin and scale axes to -1 <= xyz <= 1
+        var min = Vector(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE)
+        var max = Vector(-Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE)
+
+        for (triangle in triangles) {
+            min = min.Min(triangle.v1.position)
+            min = min.Min(triangle.v2.position)
+            min = min.Min(triangle.v3.position)
+
+            max = max.Max(triangle.v1.position)
+            max = max.Max(triangle.v2.position)
+            max = max.Max(triangle.v3.position)
+        }
+
+        val center = (min + max) * 0.5f
+        val size = max - min
+        val scale = 2f / maxOf(size.x, size.y, size.z)
+        val matrix = Matrix.Scale(Vector(scale, scale, scale)) * Matrix.Translate(-center)
+
+        for (triangle in triangles)
+            triangle.Transform(matrix)
+    }
+
     companion object {
         fun ReadOBJ(path: String): Mesh {
             val file = File(path)

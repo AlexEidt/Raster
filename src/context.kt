@@ -75,6 +75,8 @@ class Context(val width: Int, val height: Int, val framebuffer: IntArray) {
         val inverseArea = 1f / area
 
         for (y in minY..maxY) {
+            var wasInside = false
+
             for (x in minX..maxX) {
                 val p = Point(x + 0.5f, y + 0.5f)
 
@@ -83,7 +85,12 @@ class Context(val width: Int, val height: Int, val framebuffer: IntArray) {
                 val b1 = ((s3.y - s1.y) * (p.x - s3.x) + (s1.x - s3.x) * (p.y - s3.y)) * inverseArea
                 val b2 = 1f - b0 - b1
 
-                if (b0 < 0f || b1 < 0f || b2 < 0f) {
+                val outside = b0 < 0f || b1 < 0f || b2 < 0f
+                if (!outside) {
+                    wasInside = true
+                } else if (wasInside) {
+                    break
+                } else {
                     continue
                 }
 

@@ -14,13 +14,13 @@ data class Vector(val x: Float, val y: Float, val z: Float) {
 
     operator fun unaryMinus() = Vector(-x, -y, -z)
 
+    fun Min(v: Vector) = Vector(minOf(x, v.x), minOf(y, v.y), minOf(z, v.z))
+
+    fun Max(v: Vector) = Vector(maxOf(x, v.x), maxOf(y, v.y), maxOf(z, v.z))
+
     fun Dot(v: Vector) = x * v.x + y * v.y + z * v.z
 
-    fun Cross(v: Vector) = Vector(
-        y * v.z - z * v.y,
-        z * v.x - x * v.z,
-        x * v.y - y * v.x
-    )
+    fun Cross(v: Vector) = Vector(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x)
 
     fun Length() = sqrt(x * x + y * y + z * z)
 

@@ -19,6 +19,7 @@ class Window(width: Int, height: Int, var mesh: Mesh = Mesh(emptyArray())) {
     val context = Context(width, height, framebuffer)
 
     var texture: Image? = null
+    var dirty = true
 
     var rotationX = 0f
     var rotationY = 0f
@@ -66,6 +67,9 @@ class Window(width: Int, height: Int, var mesh: Mesh = Mesh(emptyArray())) {
                             }
                         }
 
+                        if (success)
+                            dirty = true
+
                         event.dropComplete(success)
                     }
                     catch (e: Exception) {
@@ -90,10 +94,12 @@ class Window(width: Int, height: Int, var mesh: Mesh = Mesh(emptyArray())) {
                 if (!e.isControlDown && (e.modifiersEx and MouseEvent.BUTTON3_DOWN_MASK) != 0) {
                     rotationY += (e.x - lastX) * 0.5f
                     rotationX -= (e.y - lastY) * 0.5f
+                    dirty = true
                 }
                 else if (e.isControlDown && (e.modifiersEx and MouseEvent.BUTTON3_DOWN_MASK) != 0) {
                     positionX += (e.x - lastX) * 0.01f
                     positionY -= (e.y - lastY) * 0.01f
+                    dirty = true
                 }
 
                 lastX = e.x
@@ -103,6 +109,7 @@ class Window(width: Int, height: Int, var mesh: Mesh = Mesh(emptyArray())) {
 
         canvas.addMouseWheelListener { e: MouseWheelEvent ->
             positionZ -= e.preciseWheelRotation.toFloat() * 0.5f
+            dirty = true
         }
     }
 

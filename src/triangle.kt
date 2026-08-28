@@ -15,6 +15,16 @@ data class Triangle(
     fun Normal(): Vector {
         return (v2.position - v1.position).Cross(v3.position - v1.position).Normalized()
     }
+
+    fun Transform(matrix: Matrix) {
+        v1.position = matrix * v1.position
+        v2.position = matrix * v2.position
+        v3.position = matrix * v3.position
+
+        v1.normal = matrix.Direction(v1.normal)
+        v2.normal = matrix.Direction(v2.normal)
+        v3.normal = matrix.Direction(v3.normal)
+    }
 }
 
 data class RasterTriangle(

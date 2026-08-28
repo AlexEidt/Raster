@@ -31,6 +31,18 @@ data class Matrix(
         m30 * m.m03 + m31 * m.m13 + m32 * m.m23 + m33 * m.m33
     )
 
+    operator fun times(v: Vector) = Vector(
+        m00 * v.x + m01 * v.y + m02 * v.z + m03,
+        m10 * v.x + m11 * v.y + m12 * v.z + m13,
+        m20 * v.x + m21 * v.y + m22 * v.z + m23
+    )
+
+    fun Direction(v: Vector) = Vector(
+        m00 * v.x + m01 * v.y + m02 * v.z,
+        m10 * v.x + m11 * v.y + m12 * v.z,
+        m20 * v.x + m21 * v.y + m22 * v.z
+    ).Normalized()
+
     operator fun times(t: Tensor) = Tensor(
         m00 * t.x + m01 * t.y + m02 * t.z + m03 * t.w,
         m10 * t.x + m11 * t.y + m12 * t.z + m13 * t.w,
@@ -77,11 +89,20 @@ data class Matrix(
             )
         }
 
-        fun Translate(x: Float, y: Float, z: Float): Matrix {
+        fun Translate(v: Vector): Matrix {
             return Matrix(
-                1f, 0f, 0f, x,
-                0f, 1f, 0f, y,
-                0f, 0f, 1f, z,
+                1f, 0f, 0f, v.x,
+                0f, 1f, 0f, v.y,
+                0f, 0f, 1f, v.z,
+                0f, 0f, 0f, 1f
+            )
+        }
+
+        fun Scale(v: Vector): Matrix {
+            return Matrix(
+                v.x, 0f, 0f, 0f,
+                0f, v.y, 0f, 0f,
+                0f, 0f, v.z, 0f,
                 0f, 0f, 0f, 1f
             )
         }

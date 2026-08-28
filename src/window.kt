@@ -16,16 +16,20 @@ class Window(width: Int, height: Int, var mesh: Mesh = Mesh(emptyArray())) {
 
     private val image = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
     private val framebuffer = (image.raster.dataBuffer as DataBufferInt).data
+
     val context = Context(width, height, framebuffer)
 
     var texture: Image? = null
-    var dirty = true
 
     var rotationX = 0f
     var rotationY = 0f
+    var rotationZ = 0f
+
     var positionX = 0f
     var positionY = 0f
     var positionZ = 0f
+
+    var dirty = true
 
     private var lastX = 0
     private var lastY = 0
@@ -33,12 +37,14 @@ class Window(width: Int, height: Int, var mesh: Mesh = Mesh(emptyArray())) {
     init {
         canvas.background = Color.BLACK
         canvas.ignoreRepaint = true
+
         window.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
         window.isResizable = false
         window.add(canvas)
         window.setSize(width, height)
         window.setLocationRelativeTo(null)
         window.isVisible = true
+
         canvas.createBufferStrategy(2)
 
         canvas.dropTarget = DropTarget().apply {
@@ -51,28 +57,29 @@ class Window(width: Int, height: Int, var mesh: Mesh = Mesh(emptyArray())) {
                         }
 
                         event.acceptDrop(DnDConstants.ACTION_COPY)
+
                         val files = event.transferable.getTransferData(DataFlavor.javaFileListFlavor) as List<*>
+
                         var success = false
 
                         for (file in files.filterIsInstance<java.io.File>()) {
                             when (file.extension.lowercase()) {
                                 "obj" -> {
                                     mesh = Mesh.ReadOBJ(file.path)
+                                    dirty = true
                                     success = true
                                 }
+
                                 "png", "jpg", "jpeg" -> {
                                     texture = Image(file.path)
+                                    dirty = true
                                     success = true
                                 }
                             }
                         }
 
-                        if (success)
-                            dirty = true
-
                         event.dropComplete(success)
-                    }
-                    catch (e: Exception) {
+                    } catch (e: Exception) {
                         event.dropComplete(false)
                         e.printStackTrace()
                     }
@@ -82,28 +89,36 @@ class Window(width: Int, height: Int, var mesh: Mesh = Mesh(emptyArray())) {
 
         canvas.addMouseListener(object : MouseAdapter() {
             override fun mousePressed(e: MouseEvent) {
-                if (e.button == MouseEvent.BUTTON3) {
-                    lastX = e.x
-                    lastY = e.y
-                }
+                lastX = e.x
+                lastY = e.y
             }
         })
 
         canvas.addMouseMotionListener(object : MouseAdapter() {
             override fun mouseDragged(e: MouseEvent) {
-                if (!e.isControlDown && (e.modifiersEx and MouseEvent.BUTTON3_DOWN_MASK) != 0) {
-                    rotationY += (e.x - lastX) * 0.5f
-                    rotationX -= (e.y - lastY) * 0.5f
-                    dirty = true
-                }
-                else if (e.isControlDown && (e.modifiersEx and MouseEvent.BUTTON3_DOWN_MASK) != 0) {
-                    positionX += (e.x - lastX) * 0.01f
-                    positionY -= (e.y - lastY) * 0.01f
-                    dirty = true
+                val dx = e.x - lastX
+                val dy = e.y - lastY
+
+                when {
+                    e.isControlDown && (e.modifiersEx and MouseEvent.BUTTON3_DOWN_MASK) != 0 -> {
+                        rotationZ += dx * 0.5f
+                    }
+
+                    (e.modifiersEx and MouseEvent.BUTTON3_DOWN_MASK) != 0 -> {
+                        rotationY += dx * 0.5f
+                        rotationX -= dy * 0.5f
+                    }
+
+                    (e.modifiersEx and MouseEvent.BUTTON1_DOWN_MASK) != 0 -> {
+                        positionX += dx * 0.01f
+                        positionY -= dy * 0.01f
+                    }
                 }
 
                 lastX = e.x
                 lastY = e.y
+
+                dirty = true
             }
         })
 
@@ -117,8 +132,9 @@ class Window(width: Int, height: Int, var mesh: Mesh = Mesh(emptyArray())) {
         do {
             val g = canvas.bufferStrategy.drawGraphics
 
-            if (!canvas.bufferStrategy.contentsRestored())
+            if (!canvas.bufferStrategy.contentsRestored()) {
                 g.drawImage(image, 0, 0, null)
+            }
 
             g.dispose()
 

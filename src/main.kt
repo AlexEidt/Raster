@@ -14,23 +14,28 @@ fun main() {
         if (window.dirty) {
             val rotationX = Matrix.Rotate(Vector(1f, 0f, 0f), window.rotationX)
             val rotationY = Matrix.Rotate(Vector(0f, 1f, 0f), window.rotationY)
-            val translation = Matrix.Translate(Vector(window.positionX, -window.positionY, window.positionZ))
-            val model = translation * rotationX * rotationY
+            val rotationZ = Matrix.Rotate(Vector(0f, 0f, 1f), window.rotationZ)
 
-            if (window.texture != null) {
-                window.context.shader = TextureShader(mat * model, window.texture!!, Color(1f, 1f, 1f))
-            } else {
-                window.context.shader = PhongShader(mat * model)
-            }
+            val translation = Matrix.Translate(Vector(window.positionX, -window.positionY, window.positionZ))
+
+            val model = translation * rotationX * rotationY * rotationZ
+
+            window.context.shader =
+                if (window.texture != null) {
+                    TextureShader(mat * model, window.texture!!, Color(1f, 1f, 1f))
+                } else {
+                    PhongShader(mat * model)
+                }
 
             window.context.Clear(Color(0f, 0f, 0f))
             window.context.Draw(window.mesh)
 
             window.dirty = false
-            window.Present()
         }
 
         frames++
+        window.Present()
+
         val now = System.nanoTime()
 
         if (now - lastTime >= 1_000_000_000L) {

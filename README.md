@@ -7,6 +7,7 @@ Software 3D Renderer.
 * Ctrl + Right Click + Drag - Rotate mesh around z axis
 * Escape - Clear Texture
 * Space - Toggle Wireframe
+* Enter - Capture Screenshot
 
 ## Features
 

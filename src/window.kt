@@ -139,17 +139,19 @@ class Window(width: Int, height: Int, var mesh: Mesh = Mesh(emptyArray())) {
                     java.awt.event.KeyEvent.VK_SPACE -> {
                         context.wireframe = !context.wireframe
                         dirty = true
-
-                        canvas.requestFocus()
                     }
 
                     java.awt.event.KeyEvent.VK_ESCAPE -> {
                         texture = null
                         dirty = true
+                    }
 
-                        canvas.requestFocus()
+                    java.awt.event.KeyEvent.VK_ENTER -> {
+                        Image.Write("capture.png", context.width, context.height, context.framebuffer)
                     }
                 }
+
+                canvas.requestFocus()
             }
         })
     }

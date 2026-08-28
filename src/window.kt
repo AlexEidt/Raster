@@ -29,10 +29,10 @@ class Window(width: Int, height: Int, var mesh: Mesh = Mesh(emptyArray())) {
     var positionY = 0f
     var positionZ = 0f
 
-    var dirty = true
-
     private var lastX = 0
     private var lastY = 0
+
+    var dirty = true
 
     init {
         canvas.background = Color.BLACK
@@ -135,9 +135,20 @@ class Window(width: Int, height: Int, var mesh: Mesh = Mesh(emptyArray())) {
 
         canvas.addKeyListener(object : java.awt.event.KeyAdapter() {
             override fun keyPressed(e: java.awt.event.KeyEvent) {
-                if (e.keyCode == java.awt.event.KeyEvent.VK_SPACE) {
-                    context.wireframe = !context.wireframe
-                    dirty = true
+                when (e.keyCode) {
+                    java.awt.event.KeyEvent.VK_SPACE -> {
+                        context.wireframe = !context.wireframe
+                        dirty = true
+
+                        canvas.requestFocus()
+                    }
+
+                    java.awt.event.KeyEvent.VK_ESCAPE -> {
+                        texture = null
+                        dirty = true
+
+                        canvas.requestFocus()
+                    }
                 }
             }
         })

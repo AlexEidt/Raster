@@ -168,10 +168,8 @@ class Context(val width: Int, val height: Int, val framebuffer: IntArray) {
                 val z = a.z + (b.z - a.z) * t
                 val index = y0 * width + x0
 
-                synchronized(locks[index and 255]) {
-                    if (z <= depthbuffer[index] + 0.001f) {
-                        framebuffer[index] = Color(1f, 1f, 1f).RGBA()
-                    }
+                if (z <= depthbuffer[index] + 0.001f) {
+                    framebuffer[index] = Color(1f, 1f, 1f).RGBA()
                 }
             }
 

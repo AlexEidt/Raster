@@ -15,7 +15,7 @@ Software 3D Renderer.
 * Face Culling
 * Triangle/Line Rasterization
 * Vertex/Fragment Shaders
-* GUI with `.obj` and texture drag and 
+* GUI with `.obj` and texture drag and drop
 
 <br>
 

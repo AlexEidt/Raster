@@ -3,27 +3,24 @@ data class Triangle(
     var v2: Vertex = Vertex(),
     var v3: Vertex = Vertex()
 ) {
-    fun Apply(shader: Shader): RasterTriangle {
-        return RasterTriangle(
-            this,
-            shader.Vertex(v1),
-            shader.Vertex(v2),
-            shader.Vertex(v3)
-        )
-    }
+    fun Apply(shader: Shader) = RasterTriangle(
+        this,
+        shader.Vertex(v1),
+        shader.Vertex(v2),
+        shader.Vertex(v3)
+    )
 
-    fun Normal(): Vector {
-        return (v2.position - v1.position).Cross(v3.position - v1.position).Normalized()
-    }
+    fun Normal() = (v2.position - v1.position).Cross(v3.position - v1.position).Normalized()
 
     fun Transform(matrix: Matrix) {
         v1.position = matrix * v1.position
         v2.position = matrix * v2.position
         v3.position = matrix * v3.position
 
-        v1.normal = matrix.Direction(v1.normal)
-        v2.normal = matrix.Direction(v2.normal)
-        v3.normal = matrix.Direction(v3.normal)
+        // No translation for normals, only direction transform
+        v1.normal = (matrix * Tensor(v1.normal)).Vector().Normalized()
+        v2.normal = (matrix * Tensor(v2.normal)).Vector().Normalized()
+        v3.normal = (matrix * Tensor(v3.normal)).Vector().Normalized()
     }
 }
 

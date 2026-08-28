@@ -37,12 +37,6 @@ data class Matrix(
         m20 * v.x + m21 * v.y + m22 * v.z + m23
     )
 
-    fun Direction(v: Vector) = Vector(
-        m00 * v.x + m01 * v.y + m02 * v.z,
-        m10 * v.x + m11 * v.y + m12 * v.z,
-        m20 * v.x + m21 * v.y + m22 * v.z
-    ).Normalized()
-
     operator fun times(t: Tensor) = Tensor(
         m00 * t.x + m01 * t.y + m02 * t.z + m03 * t.w,
         m10 * t.x + m11 * t.y + m12 * t.z + m13 * t.w,

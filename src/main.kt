@@ -33,9 +33,9 @@ fun main() {
             window.dirty = false
         }
 
-        frames++
         window.Present()
 
+        frames++
         val now = System.nanoTime()
 
         if (now - lastTime >= 1_000_000_000L) {

@@ -3,7 +3,7 @@ import javax.imageio.ImageIO
 import kotlin.math.floor
 
 class Image(val width: Int, val height: Int, private val pixels: IntArray = IntArray(width * height)) {
-    constructor(path: String) : this(load(path))
+    constructor(path: String) : this(Read(path))
 
     private constructor(image: Image) : this(image.width, image.height, image.pixels)
 
@@ -71,7 +71,7 @@ class Image(val width: Int, val height: Int, private val pixels: IntArray = IntA
             ImageIO.write(image, if (extension == "jpeg") "jpg" else extension, file)
         }
 
-        private fun load(path: String): Image {
+        private fun Read(path: String): Image {
             val extension = File(path).extension.lowercase()
 
             require(extension == "png" || extension == "jpg" || extension == "jpeg") {

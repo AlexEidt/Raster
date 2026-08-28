@@ -76,8 +76,9 @@ class Context(val width: Int, val height: Int, val framebuffer: IntArray) {
 
         for (y in minY..maxY) {
             for (x in minX..maxX) {
-                val p = Vector(x + 0.5f, y + 0.5f, 0f)
+                val p = Point(x + 0.5f, y + 0.5f)
 
+                // Barycentric
                 val b0 = ((s2.y - s3.y) * (p.x - s3.x) + (s3.x - s2.x) * (p.y - s3.y)) * inverseArea
                 val b1 = ((s3.y - s1.y) * (p.x - s3.x) + (s1.x - s3.x) * (p.y - s3.y)) * inverseArea
                 val b2 = 1f - b0 - b1
@@ -107,8 +108,7 @@ class Context(val width: Int, val height: Int, val framebuffer: IntArray) {
                     val pw2 = b2 * w2
 
                     val sum = pw0 + pw1 + pw2
-
-                    val weights = Vector(pw0 / sum, pw1 / sum, pw2 / sum)
+                    val weights = Vector(pw0, pw1, pw2) / sum
 
                     val vertex = Vertex(
                         position = v1.position * weights.x + v2.position * weights.y + v3.position * weights.z,

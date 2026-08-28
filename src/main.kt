@@ -1,7 +1,7 @@
 fun main() {
     val width = 800
     val height = 600
-    val window = Window(width, height, Mesh.LoadOBJ("cube.obj"))
+    val window = Window(width, height, Mesh.ReadOBJ("cube.obj"))
 
     val projection = Matrix.Perspective(90f, width.toFloat() / height, 0.1f, 100f)
     val view = Matrix.LookAt(Vector(0f, 0f, 5f), Vector(0f, 0f, 0f), Vector(0f, 1f, 0f))
@@ -21,6 +21,7 @@ fun main() {
         } else {
             window.context.shader = PhongShader(mat * model)
         }
+
         window.context.Clear(Color(0f, 0f, 0f))
         window.context.Draw(window.mesh)
         window.Present()

@@ -2,7 +2,7 @@ import java.io.File
 
 class Mesh(val triangles: Array<Triangle>) {
     companion object {
-        fun LoadOBJ(path: String): Mesh {
+        fun ReadOBJ(path: String): Mesh {
             val file = File(path)
 
             require(file.exists()) { "File does not exist: $path" }

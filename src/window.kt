@@ -56,7 +56,7 @@ class Window(width: Int, height: Int, var mesh: Mesh = Mesh(emptyArray())) {
                         for (file in files.filterIsInstance<java.io.File>()) {
                             when (file.extension.lowercase()) {
                                 "obj" -> {
-                                    mesh = Mesh.LoadOBJ(file.path)
+                                    mesh = Mesh.ReadOBJ(file.path)
                                     success = true
                                 }
                                 "png", "jpg", "jpeg" -> {

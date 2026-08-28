@@ -1,5 +1,5 @@
 data class Tensor(val x: Float, val y: Float, val z: Float, val w: Float) {
-    constructor(v: Vector) : this(v.x, v.y, v.z, 0f)
+    constructor(v: Vector, w: Float) : this(v.x, v.y, v.z, w)
 
     operator fun plus(t: Tensor) = Tensor(x + t.x, y + t.y, z + t.z, w + t.w)
     operator fun minus(t: Tensor) = Tensor(x - t.x, y - t.y, z - t.z, w - t.w)

@@ -10,7 +10,7 @@ class BasicShader(
     val color: Color
 ) : Shader() {
     override fun Vertex(vertex: Vertex): Tensor {
-        return matrix * Tensor(vertex.position.x, vertex.position.y, vertex.position.z, 1f)
+        return matrix * Tensor(vertex.position, 1f)
     }
 
     override fun Fragment(vertex: Vertex): Color {
@@ -24,7 +24,7 @@ class TextureShader(
     val color: Color
 ) : Shader() {
     override fun Vertex(vertex: Vertex): Tensor {
-        return matrix * Tensor(vertex.position.x, vertex.position.y, vertex.position.z, 1f)
+        return matrix * Tensor(vertex.position, 1f)
     }
 
     override fun Fragment(vertex: Vertex): Color {
@@ -38,7 +38,7 @@ class PhongShader(
     private val color: Color = Color(1f, 1f, 1f)
 ) : Shader() {
     override fun Vertex(vertex: Vertex): Tensor {
-        return matrix * Tensor(vertex.position.x, vertex.position.y, vertex.position.z, 1f)
+        return matrix * Tensor(vertex.position, 1f)
     }
 
     override fun Fragment(vertex: Vertex): Color {

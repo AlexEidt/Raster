@@ -18,9 +18,9 @@ data class Triangle(
         v3.position = matrix * v3.position
 
         // No translation for normals, only direction transform
-        v1.normal = (matrix * Tensor(v1.normal)).Vector().Normalized()
-        v2.normal = (matrix * Tensor(v2.normal)).Vector().Normalized()
-        v3.normal = (matrix * Tensor(v3.normal)).Vector().Normalized()
+        v1.normal = (matrix * Tensor(v1.normal, 0f)).Vector().Normalized()
+        v2.normal = (matrix * Tensor(v2.normal, 0f)).Vector().Normalized()
+        v3.normal = (matrix * Tensor(v3.normal, 0f)).Vector().Normalized()
     }
 }
 

@@ -13,6 +13,8 @@ class Context(val width: Int, val height: Int, val framebuffer: IntArray) {
 
     var shader: Shader = BasicShader(Matrix.Identity(), Color(1f, 1f, 1f))
 
+    var wireframe = false
+
     fun Clear(color: Color) {
         framebuffer.fill(color.RGBA())
         depthbuffer.fill(Float.POSITIVE_INFINITY)
@@ -29,10 +31,14 @@ class Context(val width: Int, val height: Int, val framebuffer: IntArray) {
 
                     val triangles = t.Clip(near)
                     for (triangle in triangles) {
-                        Rasterize(triangle)
+                        val (s1, s2, s3) = Rasterize(triangle) ?: continue
+                        if (wireframe)
+                            Wireframe(s1, s2, s3)
                     }
                 } else {
-                    Rasterize(t)
+                    val (s1, s2, s3) = Rasterize(t) ?: continue
+                    if (wireframe)
+                        Wireframe(s1, s2, s3)
                 }
             }
         }
@@ -50,7 +56,7 @@ class Context(val width: Int, val height: Int, val framebuffer: IntArray) {
         )
     }
 
-    fun Rasterize(tri: RasterTriangle) {
+    fun Rasterize(tri: RasterTriangle): Triple<Vector, Vector, Vector>? {
         val s1 = Screen(tri.t1)
         val s2 = Screen(tri.t2)
         val s3 = Screen(tri.t3)
@@ -63,7 +69,7 @@ class Context(val width: Int, val height: Int, val framebuffer: IntArray) {
         val area = (s2.x - s1.x) * (s3.y - s1.y) - (s3.x - s1.x) * (s2.y - s1.y)
 
         if (area <= 0f) {
-            return
+            return null
         }
 
         // Bounding box
@@ -127,6 +133,65 @@ class Context(val width: Int, val height: Int, val framebuffer: IntArray) {
                     framebuffer[index] = shader.Fragment(vertex).RGBA()
                 }
             }
+        }
+
+        return Triple(s1, s2, s3)
+    }
+
+    fun Wireframe(s1: Vector, s2: Vector, s3: Vector) {
+        Line(s1, s2)
+        Line(s2, s3)
+        Line(s3, s1)
+    }
+
+    private fun Line(a: Vector, b: Vector) {
+        var x0 = a.x.toInt()
+        var y0 = a.y.toInt()
+
+        val x1 = b.x.toInt()
+        val y1 = b.y.toInt()
+
+        val dx = kotlin.math.abs(x1 - x0)
+        val dy = kotlin.math.abs(y1 - y0)
+
+        val sx = if (x0 < x1) 1 else -1
+        val sy = if (y0 < y1) 1 else -1
+
+        val length = maxOf(dx, dy)
+        var step = 0
+
+        var error = dx - dy
+
+        while (true) {
+            if (x0 in 0 until width && y0 in 0 until height) {
+                val t = if (length == 0) 0f else step.toFloat() / length
+                val z = a.z + (b.z - a.z) * t
+                val index = y0 * width + x0
+
+                synchronized(locks[index and 255]) {
+                    if (z <= depthbuffer[index] + 0.001f) {
+                        framebuffer[index] = Color(1f, 1f, 1f).RGBA()
+                    }
+                }
+            }
+
+            if (x0 == x1 && y0 == y1) {
+                break
+            }
+
+            val e2 = 2 * error
+
+            if (e2 > -dy) {
+                error -= dy
+                x0 += sx
+            }
+
+            if (e2 < dx) {
+                error += dx
+                y0 += sy
+            }
+
+            step++
         }
     }
 }

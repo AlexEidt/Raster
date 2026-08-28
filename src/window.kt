@@ -47,6 +47,9 @@ class Window(width: Int, height: Int, var mesh: Mesh = Mesh(emptyArray())) {
 
         canvas.createBufferStrategy(2)
 
+        canvas.isFocusable = true
+        canvas.requestFocus()
+
         canvas.dropTarget = DropTarget().apply {
             addDropTargetListener(object : java.awt.dnd.DropTargetAdapter() {
                 override fun drop(event: java.awt.dnd.DropTargetDropEvent) {
@@ -77,6 +80,9 @@ class Window(width: Int, height: Int, var mesh: Mesh = Mesh(emptyArray())) {
                                 }
                             }
                         }
+
+                        if (success)
+                            canvas.requestFocus()
 
                         event.dropComplete(success)
                     } catch (e: Exception) {
@@ -126,6 +132,15 @@ class Window(width: Int, height: Int, var mesh: Mesh = Mesh(emptyArray())) {
             positionZ -= e.preciseWheelRotation.toFloat() * 0.5f
             dirty = true
         }
+
+        canvas.addKeyListener(object : java.awt.event.KeyAdapter() {
+            override fun keyPressed(e: java.awt.event.KeyEvent) {
+                if (e.keyCode == java.awt.event.KeyEvent.VK_SPACE) {
+                    context.wireframe = !context.wireframe
+                    dirty = true
+                }
+            }
+        })
     }
 
     fun Present() {

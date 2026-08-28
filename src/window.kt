@@ -142,8 +142,8 @@ class Window(width: Int, height: Int, var mesh: Mesh = Mesh(emptyArray())) {
                     }
 
                     java.awt.event.KeyEvent.VK_ESCAPE -> {
+                        dirty = texture != null
                         texture = null
-                        dirty = true
                     }
 
                     java.awt.event.KeyEvent.VK_ENTER -> {

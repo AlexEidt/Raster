@@ -84,17 +84,17 @@ data class Matrix(
         }
 
         fun Translate(v: Vector) = Matrix(
-                1f, 0f, 0f, v.x,
-                0f, 1f, 0f, v.y,
-                0f, 0f, 1f, v.z,
-                0f, 0f, 0f, 1f
+            1f, 0f, 0f, v.x,
+            0f, 1f, 0f, v.y,
+            0f, 0f, 1f, v.z,
+            0f, 0f, 0f, 1f
         )
 
         fun Scale(v: Vector) = Matrix(
-                v.x, 0f, 0f, 0f,
-                0f, v.y, 0f, 0f,
-                0f, 0f, v.z, 0f,
-                0f, 0f, 0f, 1f
+            v.x, 0f, 0f, 0f,
+            0f, v.y, 0f, 0f,
+            0f, 0f, v.z, 0f,
+            0f, 0f, 0f, 1f
         )
 
         fun Rotate(axis: Vector, angle: Float): Matrix {

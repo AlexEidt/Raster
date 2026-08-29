@@ -1,5 +1,4 @@
 data class Color(var r: Float, var g: Float, var b: Float, var a: Float = 1f) {
-
     constructor(rgba: Int) : this(
         ((rgba shr 16) and 0xFF) / 255f,
         ((rgba shr 8) and 0xFF) / 255f,

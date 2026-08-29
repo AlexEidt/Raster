@@ -1,8 +1,4 @@
-data class Triangle(
-    var v1: Vertex = Vertex(),
-    var v2: Vertex = Vertex(),
-    var v3: Vertex = Vertex()
-) {
+data class Triangle(var v1: Vertex = Vertex(), var v2: Vertex = Vertex(), var v3: Vertex = Vertex()) {
     fun Apply(shader: Shader) = RasterTriangle(
         this,
         shader.Vertex(v1),
@@ -24,12 +20,7 @@ data class Triangle(
     }
 }
 
-data class RasterTriangle(
-    val triangle: Triangle,
-    var t1: Tensor,
-    var t2: Tensor,
-    var t3: Tensor
-) {
+data class RasterTriangle(val triangle: Triangle, var t1: Tensor, var t2: Tensor, var t3: Tensor) {
     fun DeepCopy() = RasterTriangle(
         Triangle(triangle.v1.copy(), triangle.v2.copy(), triangle.v3.copy()),
         t1,

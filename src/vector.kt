@@ -1,7 +1,6 @@
 import kotlin.math.sqrt
 
 data class Vector(val x: Float, val y: Float, val z: Float) {
-
     operator fun plus(v: Vector) = Vector(x + v.x, y + v.y, z + v.z)
     operator fun minus(v: Vector) = Vector(x - v.x, y - v.y, z - v.z)
     operator fun times(v: Vector) = Vector(x * v.x, y * v.y, z * v.z)

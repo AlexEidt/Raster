@@ -8,7 +8,6 @@ data class Matrix(
     val m20: Float, val m21: Float, val m22: Float, val m23: Float,
     val m30: Float, val m31: Float, val m32: Float, val m33: Float
 ) {
-
     operator fun times(m: Matrix) = Matrix(
         m00 * m.m00 + m01 * m.m10 + m02 * m.m20 + m03 * m.m30,
         m00 * m.m01 + m01 * m.m11 + m02 * m.m21 + m03 * m.m31,

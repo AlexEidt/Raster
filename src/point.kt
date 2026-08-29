@@ -1,5 +1,4 @@
 data class Point(val x: Float, val y: Float) {
-
     operator fun plus(p: Point) = Point(x + p.x, y + p.y)
     operator fun minus(p: Point) = Point(x - p.x, y - p.y)
     operator fun times(p: Point) = Point(x * p.x, y * p.y)

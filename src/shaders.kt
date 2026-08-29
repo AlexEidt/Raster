@@ -1,14 +1,9 @@
-import kotlin.math.pow
-
 abstract class Shader {
     abstract fun Vertex(vertex: Vertex): Tensor
     abstract fun Fragment(vertex: Vertex): Color
 }
 
-class BasicShader(
-    val matrix: Matrix,
-    val color: Color
-) : Shader() {
+class BasicShader(val matrix: Matrix, val color: Color) : Shader() {
     override fun Vertex(vertex: Vertex): Tensor {
         return matrix * Tensor(vertex.position, 1f)
     }
@@ -18,11 +13,7 @@ class BasicShader(
     }
 }
 
-class TextureShader(
-    val matrix: Matrix,
-    val texture: Image,
-    val color: Color
-) : Shader() {
+class TextureShader(val matrix: Matrix, val texture: Image, val color: Color) : Shader() {
     override fun Vertex(vertex: Vertex): Tensor {
         return matrix * Tensor(vertex.position, 1f)
     }
@@ -32,11 +23,7 @@ class TextureShader(
     }
 }
 
-class PhongShader(
-    private val matrix: Matrix,
-    private val light: Vector = Vector(3f, 4f, 3f),
-    private val color: Color = Color(1f, 1f, 1f)
-) : Shader() {
+class PhongShader(val matrix: Matrix, val light: Vector = Vector(3f, 4f, 3f), val color: Color = Color(1f, 1f, 1f)) : Shader() {
     override fun Vertex(vertex: Vertex): Tensor {
         return matrix * Tensor(vertex.position, 1f)
     }

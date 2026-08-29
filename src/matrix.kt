@@ -51,7 +51,6 @@ data class Matrix(
     )
 
     companion object {
-
         fun Identity() = Matrix(
             1f, 0f, 0f, 0f,
             0f, 1f, 0f, 0f,

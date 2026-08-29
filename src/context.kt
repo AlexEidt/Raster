@@ -1,3 +1,5 @@
+import kotlin.math.abs
+
 class Context(val width: Int, val height: Int, val framebuffer: IntArray) {
     init {
         require(framebuffer.size == width * height) {
@@ -151,8 +153,8 @@ class Context(val width: Int, val height: Int, val framebuffer: IntArray) {
         val x1 = b.x.toInt()
         val y1 = b.y.toInt()
 
-        val dx = kotlin.math.abs(x1 - x0)
-        val dy = kotlin.math.abs(y1 - y0)
+        val dx = abs(x1 - x0)
+        val dy = abs(y1 - y0)
 
         val sx = if (x0 < x1) 1 else -1
         val sy = if (y0 < y1) 1 else -1

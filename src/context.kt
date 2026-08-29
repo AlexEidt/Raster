@@ -31,6 +31,7 @@ class Context(val width: Int, val height: Int, val framebuffer: IntArray) {
                 if (t.t1.Behind() || t.t2.Behind() || t.t3.Behind()) {
                     val near = Plane(Tensor(0f, 0f, -1f, 1f), Tensor(0f, 0f, 1f, 1f))
 
+                    // Clip against the near plane; remaining screen-space clipping handled by rasterization
                     val triangles = t.Clip(near)
                     for (triangle in triangles) {
                         val (s1, s2, s3) = Rasterize(triangle) ?: continue

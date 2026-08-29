@@ -103,10 +103,10 @@ data class Matrix(
             val t = 1f - c
 
             return Matrix(
-                t * a.x * a.x + c,       t * a.x * a.y - s * a.z, t * a.x * a.z + s * a.y, 0f,
-                t * a.x * a.y + s * a.z, t * a.y * a.y + c,       t * a.y * a.z - s * a.x, 0f,
-                t * a.x * a.z - s * a.y, t * a.y * a.z + s * a.x, t * a.z * a.z + c,       0f,
-                0f,                       0f,                       0f,                       1f
+                t * a.x * a.x + c,        t * a.x * a.y - s * a.z,   t * a.x * a.z + s * a.y,   0f,
+                t * a.x * a.y + s * a.z,  t * a.y * a.y + c,         t * a.y * a.z - s * a.x,   0f,
+                t * a.x * a.z - s * a.y,  t * a.y * a.z + s * a.x,   t * a.z * a.z + c,         0f,
+                0f,                       0f,                        0f,                        1f
             )
         }
 
